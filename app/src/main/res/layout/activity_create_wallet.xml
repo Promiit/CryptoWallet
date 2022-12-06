@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateWallet">
+
+    <EditText
+        android:id="@+id/address_box"
+        android:layout_width="323dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="29dp"
+        android:background="#B6B6B6"
+        android:ems="10"
+        android:inputType="none"
+        android:text="Address"
+        app:layout_constraintBottom_toTopOf="@+id/textview_addr2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_addr" />
+
+    <EditText
+        android:id="@+id/public_key_box"
+        android:layout_width="323dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="28dp"
+        android:background="#B6B6B6"
+        android:ems="10"
+        android:inputType="none"
+        android:text="Public Key"
+        app:layout_constraintBottom_toTopOf="@+id/textview_addr3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_addr2" />
+
+    <EditText
+        android:id="@+id/private_key_box"
+        android:layout_width="323dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="29dp"
+        android:background="#B6B6B6"
+        android:ems="10"
+        android:inputType="none"
+        android:text="Private Key"
+        app:layout_constraintBottom_toTopOf="@+id/generate_wallet_done_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_addr4" />
+
+    <Button
+        android:id="@+id/generate_wallet_done_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="153dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginBottom="127dp"
+        android:text="DONE"
+        android:onClick="clickDoneGenerateWallet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/private_key_box" />
+
+    <Button
+        android:id="@+id/generate_wallet_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="117dp"
+        android:layout_marginTop="51dp"
+        android:layout_marginEnd="117dp"
+        android:layout_marginBottom="16dp"
+        android:text="Generate Wallet"
+        android:onClick="clickGenerateWallet"
+        app:layout_constraintBottom_toTopOf="@+id/textview_addr"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview_addr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="179dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="7dp"
+        android:text="Address"
+        app:layout_constraintBottom_toTopOf="@+id/address_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generate_wallet_btn" />
+
+    <TextView
+        android:id="@+id/textview_addr2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="173dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="173dp"
+        android:layout_marginBottom="6dp"
+        android:text="Public Key"
+        app:layout_constraintBottom_toTopOf="@+id/public_key_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address_box" />
+
+    <TextView
+        android:id="@+id/textview_addr3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="171dp"
+        android:layout_marginBottom="4dp"
+        android:text="Private Key"
+        app:layout_constraintBottom_toTopOf="@+id/textview_addr4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/public_key_box" />
+
+    <TextView
+        android:id="@+id/textview_addr4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="91dp"
+        android:layout_marginBottom="7dp"
+        android:text="STORE THIS IN A SECURE LOCATION"
+        android:textColor="#DF4C4C"
+        app:layout_constraintBottom_toTopOf="@+id/private_key_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_addr3" />
+</androidx.constraintlayout.widget.ConstraintLayout>
