@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateBalance() {
+        if (addr_dd.getSelectedItem() == null) return;
         String code = addr_dd.getSelectedItem().toString();
         requestBalance(code);
     }
@@ -89,10 +90,16 @@ public class MainActivity extends AppCompatActivity {
                         // Display the first 500 characters of the response string.
                         try {
                             JSONObject obj = new JSONObject(response);
-                            String bal = obj.getString("balance");
-                            setBalance(bal);
+                            double bal = obj.getDouble("balance");
+                            double power = 1000000000000000000l;
+                            bal = bal / power;
+                            String balance = "" + bal;
+                            System.out.println("BALANCE: " + balance);
+                            setBalance(balance);
                         } catch (Exception e) {
                             System.out.println("Exception when converting JSON Object");
+                            e.printStackTrace();
+                            setBalance("null");
                         }
 
 
@@ -123,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateQRCode() {
+        if (addr_dd.getSelectedItem() == null) return;
         String code = addr_dd.getSelectedItem().toString();
         Picasso.get().load("https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=" +
                         code +
