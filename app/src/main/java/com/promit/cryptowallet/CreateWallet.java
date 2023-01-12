@@ -6,6 +6,7 @@ import static android.view.View.VISIBLE;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,22 +90,22 @@ public class CreateWallet extends AppCompatActivity {
         privkeyBox.setText(privkey);
     }
 
+    /*
+    TODO: Generate wallet using own JSONRPC server instead of blockcypher call
+     */
     private void createAccount() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://api.blockcypher.com/v1/eth/main/" +
                 "addrs?token=11cad3be9a3d4b4e946c737fedf622d1";
-        // Request a string response from the provided URL.
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
                         try {
                             JSONObject obj = new JSONObject(response);
                             DBHandler db = new DBHandler(CreateWallet.this);
                             String address = "0x" + obj.getString("address");
-
                             String pubkey = obj.getString("public");
                             String privkey = obj.getString("private");
                             db.addAddress(address);
@@ -115,17 +116,15 @@ public class CreateWallet extends AppCompatActivity {
                             System.out.println("Exception when converting JSON Object");
                         }
 
-                        System.out.println("Response is: " + response );
+                        Log.i("CryptoWallet:", "Response is: " + response );
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("CryptoWallet:","Error getting response when creating address");
             }
         });
         queue.add(stringRequest);
-
-
     }
 
 

@@ -17,12 +17,13 @@ public class AddWallet extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_wallet);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         saveBtn = (Button) findViewById(R.id.add_addr_save_btn);
         addrBar = (TextInputLayout) findViewById(R.id.addr_input);
     }
 
     public void saveClicked(View view) {
+        // Take text in address bar and save to db
         DBHandler db = new DBHandler(this);
         String addr = addrBar.getEditText().getText().toString();
         db.addAddress(addr);

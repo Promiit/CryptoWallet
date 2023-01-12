@@ -34,9 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.promit.cryptowallet.QRCodeActivity"
-            android:parentActivityName="com.promit.cryptowallet.MainActivity" />
     </application>
 
 </manifest>

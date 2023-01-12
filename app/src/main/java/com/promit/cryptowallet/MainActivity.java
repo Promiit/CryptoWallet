@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,13 +25,15 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
-    static Spinner addr_dd;
-    static ImageView codeImg;
+    static Spinner addrDropDownSpinner;
+    static ImageView qrCodeImage;
     static DBHandler db;
-    static TextView balance;
+    static TextView balanceText;
+    static String LOG_TAG = "CryptoWallet:";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +41,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = new DBHandler(MainActivity.this);
-        //db.addAddress("0xf817f103331e5fb18420fe9d813442b1b19f7195");
-        //db.addAddress("HELLO22");
-        addr_dd = (Spinner) findViewById(R.id.addr_dropdown);
-        balance = (TextView) findViewById(R.id.balance_text);
-        codeImg = (ImageView) findViewById(R.id.qrView);
-        addr_dd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        addrDropDownSpinner = (Spinner) findViewById(R.id.addr_dropdown);
+        balanceText = (TextView) findViewById(R.id.balance_text);
+        qrCodeImage = (ImageView) findViewById(R.id.qrView);
+        // Creating listener for dropdown
+        addrDropDownSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 MainActivity.this.updateQRCode();
@@ -55,55 +57,59 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         loadDropdown();
         updateQRCode();
         updateBalance();
-
     }
 
+    /*
+    Check which address selected in spinner and update balance
+     */
     public void updateBalance() {
-        if (addr_dd.getSelectedItem() == null) return;
-        String code = addr_dd.getSelectedItem().toString();
+        if (addrDropDownSpinner.getSelectedItem() == null) return;
+        String code = addrDropDownSpinner.getSelectedItem().toString();
         requestBalance(code);
     }
+    /*
+    Button event listener method for refresh button
+     */
     public void refreshBalance(View view) {
         updateBalance();
-        //createAccount();
     }
 
-    public void setBalance(String bal) {
-        balance.setText("Balance: " + bal + " ETH");
+    /*
+    For testing purposes only
+     */
+    private void setBalance(String bal) {
+        balanceText.setText("Balance: " + bal + " ETH");
     }
 
-
-
+    /*
+    Call to API to request balance on @param addr
+     */
     public void requestBalance(String addr){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://api.blockcypher.com/v1/eth/main/addrs/" +
-                addr +
-                "/balance";
-        // Request a string response from the provided URL.
+        String url = "http://localhost:3000/balance/" +
+                addr;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
                         try {
                             JSONObject obj = new JSONObject(response);
                             double bal = obj.getDouble("balance");
+                            // to convert from wei to eth
                             double power = 1000000000000000000l;
                             bal = bal / power;
                             String balance = "" + bal;
-                            System.out.println("BALANCE: " + balance);
+                            Log.i(LOG_TAG, "Balance is " + balance);
                             setBalance(balance);
                         } catch (Exception e) {
                             System.out.println("Exception when converting JSON Object");
                             e.printStackTrace();
                             setBalance("null");
                         }
-
-
-                        System.out.println("Response is: " + response );
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -114,31 +120,42 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+    /*
+    Reload page on resume
+     */
     @Override
     public void onResume(){
         super.onResume();
         this.loadDropdown();
         this.updateQRCode();
         this.updateBalance();
-
-
     }
+
+    /*
+    Populate spinner from db entries
+     */
     public void loadDropdown() {
         List<String> addresses = db.getAddresses();
-        ArrayAdapter<String> adapter = new ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, addresses.toArray() );
-        addr_dd.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter(this,
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, addresses.toArray() );
+        addrDropDownSpinner.setAdapter(adapter);
     }
 
+    /*
+    Load image from Google API to Picasso
+     */
     public void updateQRCode() {
-        if (addr_dd.getSelectedItem() == null) return;
-        String code = addr_dd.getSelectedItem().toString();
+        if (addrDropDownSpinner.getSelectedItem() == null) return;
+        String code = addrDropDownSpinner.getSelectedItem().toString();
         Picasso.get().load("https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=" +
                         code +
                         "&choe=UTF-8")
-                .into(codeImg);
-        //requestBalance(code);
+                .into(qrCodeImage);
     }
 
+    /*
+    Handles pop-up confirmation and removal of address from db
+     */
     public void removeCurrentAddr(View view) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Wallet")
@@ -148,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        String code = addr_dd.getSelectedItem().toString();
+                        String code = addrDropDownSpinner.getSelectedItem().toString();
                         db.removeAddress(code);
                         MainActivity.this.loadDropdown();
                     }
@@ -158,14 +175,19 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-
     }
 
+    /*
+    Button listener to 'Add Wallet' page
+     */
     public void openAddWallet(View view) {
         Intent intent = new Intent(this, AddWallet.class);
         startActivity(intent);
     }
 
+    /*
+    Button listener to 'Create Wallet' page
+     */
     public void goCreateWallet(View view) {
         Intent intent = new Intent(this, CreateWallet.class);
         startActivity(intent);
